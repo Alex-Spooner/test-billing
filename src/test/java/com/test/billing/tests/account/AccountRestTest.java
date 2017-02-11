@@ -7,21 +7,22 @@ import com.test.billing.tests.utils.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import ru.yandex.qatools.allure.annotations.Features;
+import ru.yandex.qatools.allure.annotations.Stories;
+import ru.yandex.qatools.allure.annotations.Title;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.List;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
 
 /**
  * Created by Gosh on 09.02.2017.
  * Nothing special
  */
-
+@Features("Account CRUD")
+@Stories("Account management")
 @ContextConfiguration("classpath:application-context.xml")
 public class AccountRestTest extends AbstractTestNGSpringContextTests {
 
@@ -44,20 +45,30 @@ public class AccountRestTest extends AbstractTestNGSpringContextTests {
         for (Account account : accountList) log.info(account.toString());
     }
 
-    @Test(enabled = false)
+    @Test(enabled = true)
     public void getBalanceByIdFromREST() {
-        Account account = accountRest.getAccountById(1L);
+        Account account = accountRest.getElementById(1L);
         log.info(account.toString());
     }
 
-    @Test(enabled = false)
+    @Title("Account get by id method positive test")
+    @Test(enabled = true, groups = {"all.smoke"})
     public void getAccountByIdMethodPositiveTest() {
 
         long accountId = 1l;
         List<Account> expectedAccountList = accountDAO.getAccountById(accountId);
-        Account actualAccount = accountRest.getAccountById(accountId);
+        Account actualAccount = accountRest.getElementById(accountId);
 
-        assertEquals(actualAccount.toString(), expectedAccountList.get(0).toString() );
+        assertEquals(actualAccount.toString(), expectedAccountList.get(0).toString());
+    }
+
+    @Title("Account get by id method negative test")
+    @Test(enabled = true, groups = {"all.smoke"})
+    public void getAccountByIdMethodNegativeTest() {
+
+        String accountId = "111";
+        accountRest.getElementByIdNegative(accountId);
+
     }
 
 

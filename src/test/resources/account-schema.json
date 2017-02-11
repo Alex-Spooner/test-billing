@@ -1,0 +1,28 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "accountId": {
+      "type": "integer"
+    },
+    "firstName": {
+      "type": "string"
+    },
+    "secondName": {
+      "type": "string"
+    },
+    "lastName": {
+      "type": "string"
+    },
+    "creDate": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "accountId",
+    "firstName",
+    "secondName",
+    "lastName",
+    "creDate"
+  ]
+}

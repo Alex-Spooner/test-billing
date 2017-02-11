@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<suite name="MainSuite" verbose="1">
+
+    <test name="RestSmoke">
+        <classes>
+            <class name="com.test.billing.tests.account.AccountRestTest"/>
+            <class name="com.test.billing.tests.balance.BalanceRestTest"/>
+        </classes>
+    </test>
+
+</suite>

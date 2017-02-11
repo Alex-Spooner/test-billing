@@ -3,30 +3,34 @@ package com.test.billing.tests.rest;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.test.billing.dao.model.Balance;
-import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 import static io.restassured.RestAssured.given;
+import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
 
 /**
  * Created by Gosh on 11.02.2017.
  * Nothing special
  */
 
-@Component
 public class BalanceRest {
 
     private String rootPath;
 
-    public Balance getBalanceById(Long id) {
+    public Balance getElementById(Long id) {
         String json = given()
                 .header("Content-Type", "application/json")
                 .when()
                 .get(rootPath + "balance/" + id)
                 .then()
+                .log()
+                .ifValidationFails()
+                .statusCode(200)
+                .assertThat()
+                .body(matchesJsonSchemaInClasspath("balance-schema.json"))
                 .extract()
                 .response()
                 .body().asString();
@@ -43,6 +47,17 @@ public class BalanceRest {
             e.printStackTrace();
         }
         return balance;
+    }
+
+    public void getElementByIdNegative(String id) {
+        given()
+                .header("Content-Type", "application/json")
+                .when()
+                .get(rootPath + "balance/" + id)
+                .then()
+                .log()
+                .ifValidationFails()
+                .statusCode(404);
     }
 
     public BalanceRest() {

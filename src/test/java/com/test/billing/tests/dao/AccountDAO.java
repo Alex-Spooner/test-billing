@@ -17,7 +17,7 @@ public class AccountDAO extends JdbcDaoSupport {
 
     private static final RowMapper<Account> ACCOUNT_ROW_MAPPER = new AccountMapper();
 
-    public List<Account> getAccountById(long id){
+    public List<Account> getAccountById(long id) {
         return getJdbcTemplate()
                 .query(GET_ACCOUNT_BY_ID + id, ACCOUNT_ROW_MAPPER);
     }

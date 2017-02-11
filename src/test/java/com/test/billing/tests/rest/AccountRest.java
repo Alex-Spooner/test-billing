@@ -9,6 +9,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 import static io.restassured.RestAssured.given;
+import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
 
 /**
  * Created by Gosh on 11.02.2017.
@@ -18,12 +19,18 @@ public class AccountRest {
 
     private String rootPath;
 
-    public Account getAccountById(Long id) {
+    public Account getElementById(Long id) {
+
         String json = given()
                 .header("Content-Type", "application/json")
                 .when()
                 .get(rootPath + "account/" + id)
                 .then()
+                .log()
+                .ifValidationFails()
+                .statusCode(200)
+                .assertThat()
+                .body(matchesJsonSchemaInClasspath("account-schema.json"))
                 .extract()
                 .response()
                 .body().asString();
@@ -40,6 +47,17 @@ public class AccountRest {
             e.printStackTrace();
         }
         return account;
+    }
+
+    public void getElementByIdNegative(String id) {
+        given()
+                .header("Content-Type", "application/json")
+                .when()
+                .get(rootPath + "account/" + id)
+                .then()
+                .log()
+                .ifValidationFails()
+                .statusCode(404);
     }
 
     public AccountRest() {

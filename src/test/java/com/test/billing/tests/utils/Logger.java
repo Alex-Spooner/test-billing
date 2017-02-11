@@ -5,7 +5,7 @@ package com.test.billing.tests.utils;
  * Nothing special
  */
 public class Logger {
-    public void info(String text){
+    public void info(String text) {
         System.out.printf(">>>>>>INFO:" + text);
     }
 }
