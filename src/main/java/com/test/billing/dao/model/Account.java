@@ -2,6 +2,8 @@ package com.test.billing.dao.model;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -72,12 +74,13 @@ public class Account {
 
     @Override
     public String toString() {
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         final StringBuffer sb = new StringBuffer("Account{");
         sb.append("accountId=").append(accountId);
         sb.append(", firstName='").append(firstName).append('\'');
         sb.append(", secondName='").append(secondName).append('\'');
         sb.append(", lastName='").append(lastName).append('\'');
-        sb.append(", creDate=").append(creDate);
+        sb.append(", creDate=").append(df.format(creDate));
         sb.append('}');
         return sb.toString();
     }

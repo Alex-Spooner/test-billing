@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.test.billing.dao.model.Account;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 import static io.restassured.RestAssured.given;
 
@@ -28,6 +30,9 @@ public class AccountRest {
 
         JsonFactory factory = new JsonFactory();
         ObjectMapper mapper = new ObjectMapper(factory);
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        mapper.setDateFormat(df);
+
         Account account = null;
         try {
             account = mapper.readValue(json, Account.class);

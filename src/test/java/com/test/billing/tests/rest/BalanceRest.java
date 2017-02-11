@@ -6,6 +6,8 @@ import com.test.billing.dao.model.Balance;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 import static io.restassured.RestAssured.given;
 
@@ -31,6 +33,9 @@ public class BalanceRest {
 
         JsonFactory factory = new JsonFactory();
         ObjectMapper mapper = new ObjectMapper(factory);
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        mapper.setDateFormat(df);
+
         Balance balance = null;
         try {
             balance = mapper.readValue(json, Balance.class);

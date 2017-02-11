@@ -1,5 +1,7 @@
 package com.test.billing.dao.model;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -46,10 +48,11 @@ public class Balance {
 
     @Override
     public String toString() {
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         final StringBuffer sb = new StringBuffer("Balance{");
         sb.append("balanceId=").append(balanceId);
         sb.append(", amount=").append(amount);
-        sb.append(", creDate=").append(creDate);
+        sb.append(", creDate=").append(df.format(creDate));
         sb.append('}');
         return sb.toString();
     }
