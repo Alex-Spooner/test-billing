@@ -2,7 +2,9 @@ package com.test.billing.tests.balance;
 
 import com.test.billing.dao.model.Balance;
 import com.test.billing.tests.dao.BalanceDAO;
+import com.test.billing.tests.dataprovider.BalanceDataProvider;
 import com.test.billing.tests.rest.BalanceRest;
+import com.test.billing.tests.utils.JsonUtils;
 import com.test.billing.tests.utils.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -38,20 +40,8 @@ public class BalanceRestTest extends AbstractTestNGSpringContextTests {
     public void setUp() {
     }
 
-    @Test(enabled = false)
-    public void getBalanceByIdFromDB() {
-        List<Balance> balanceList = balanceDAO.getBalanceById(1L);
-        for (Balance balance : balanceList) log.info(balance.toString());
-    }
-
-    @Test(enabled = true)
-    public void getBalanceByIdFromRest() {
-        Balance balance = balanceRest.getElementById(1l);
-        log.info(balance.toString());
-    }
-
-    @Title("Balance get by id method test")
-    @Test(enabled = false, groups = {"all.smoke"})
+    @Title("Get by id method positive test")
+    @Test(enabled = true, groups = {"all.rest"})
     public void getBalanceByIdMethodPositiveTest() {
 
         long accountId = 1l;
@@ -61,12 +51,29 @@ public class BalanceRestTest extends AbstractTestNGSpringContextTests {
         assertEquals(actualBalance.toString(), expectedBalanceList.get(0).toString());
     }
 
-    @Title("Account get by id method negative test")
-    @Test(enabled = true, groups = {"all.smoke"})
+    @Title("Get by id method negative test")
+    @Test(enabled = true, groups = {"all.rest"})
     public void getBalanceByIdMethodNegativeTest() {
 
-        String accountId = "111";
+        String accountId = "111222";
         balanceRest.getElementByIdNegative(accountId);
 
+    }
+
+    @Title("Post method positive test")
+    @Test(enabled = true, groups = {"all.rest"}, dataProviderClass = BalanceDataProvider.class, dataProvider = "balancePositiveCases")
+    public void postMethodPositiveTest(String expectedBalanceData) {
+
+        Balance expectedBalance = JsonUtils.getBalanceFromJson(expectedBalanceData);
+        long balanceId = expectedBalance.getBalanceId();
+
+        Balance actualResponseBalance = balanceRest.setElement(expectedBalanceData);
+        List<Balance> actualBalanceList = balanceDAO.getBalanceById(balanceId);
+
+        assertEquals(actualResponseBalance.toString(), actualBalanceList.get(0).toString(), "Balance from the response body should be equal to created balance!");
+        assertEquals(actualBalanceList.get(0).toString(), expectedBalance.toString());
+
+        balanceDAO.deleteBalanceById(balanceId);
+        ;
     }
 }

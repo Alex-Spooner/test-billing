@@ -5,6 +5,7 @@ import com.test.billing.tests.mapper.BalanceMapper;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
+import java.sql.Types;
 import java.util.List;
 
 /**
@@ -13,12 +14,19 @@ import java.util.List;
  */
 public class BalanceDAO extends JdbcDaoSupport {
     private static final String GET_BALANCE_BY_ID = "select * from balance where balance_id =";
+    private static final String DELETE_BALANCE_BY_ID = "delete from balance where balance_id = ?";
 
     private static final RowMapper<Balance> BALANCE_ROW_MAPPER = new BalanceMapper();
 
     public List<Balance> getBalanceById(long id) {
         return getJdbcTemplate()
                 .query(GET_BALANCE_BY_ID + id, BALANCE_ROW_MAPPER);
+    }
+
+    public void deleteBalanceById(long id) {
+        int[] types = {Types.BIGINT};
+        Object[] args = {id};
+        getJdbcTemplate().update(DELETE_BALANCE_BY_ID, args, types);
     }
 
 

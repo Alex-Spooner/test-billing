@@ -58,6 +58,18 @@
   </build>
   <dependencies>
     <dependency>
+      <groupId>io.rest-assured</groupId>
+      <artifactId>json-schema-validator</artifactId>
+      <version>3.0.2</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>json-schema-validator</artifactId>
+          <groupId>com.github.fge</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-test</artifactId>
       <version>LATEST</version>
@@ -147,6 +159,7 @@
     <mainClass>com.test.billing.BillingApplication</mainClass>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <slf4j.version>1.7.12</slf4j.version>
+    <allure.version>1.5.0.RC2</allure.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 </project>

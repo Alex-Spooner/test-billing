@@ -2,7 +2,9 @@ package com.test.billing.tests.account;
 
 import com.test.billing.dao.model.Account;
 import com.test.billing.tests.dao.AccountDAO;
+import com.test.billing.tests.dataprovider.AccountDataProvider;
 import com.test.billing.tests.rest.AccountRest;
+import com.test.billing.tests.utils.JsonUtils;
 import com.test.billing.tests.utils.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -39,20 +41,8 @@ public class AccountRestTest extends AbstractTestNGSpringContextTests {
     public void setUp() {
     }
 
-    @Test(enabled = false)
-    public void getAccountByIdFromDB() {
-        List<Account> accountList = accountDAO.getAccountById(1l);
-        for (Account account : accountList) log.info(account.toString());
-    }
-
-    @Test(enabled = true)
-    public void getBalanceByIdFromREST() {
-        Account account = accountRest.getElementById(1L);
-        log.info(account.toString());
-    }
-
-    @Title("Account get by id method positive test")
-    @Test(enabled = true, groups = {"all.smoke"})
+    @Title("Get by id method positive test")
+    @Test(enabled = true, groups = {"all.rest"})
     public void getAccountByIdMethodPositiveTest() {
 
         long accountId = 1l;
@@ -62,13 +52,29 @@ public class AccountRestTest extends AbstractTestNGSpringContextTests {
         assertEquals(actualAccount.toString(), expectedAccountList.get(0).toString());
     }
 
-    @Title("Account get by id method negative test")
-    @Test(enabled = true, groups = {"all.smoke"})
+    @Title("Get by id method negative test")
+    @Test(enabled = true, groups = {"all.rest"})
     public void getAccountByIdMethodNegativeTest() {
 
-        String accountId = "111";
+        String accountId = "111222333";
         accountRest.getElementByIdNegative(accountId);
 
+    }
+
+    @Title("Post method positive test")
+    @Test(enabled = true, groups = {"all.rest"}, dataProviderClass = AccountDataProvider.class, dataProvider = "accountPositiveCases")
+    public void postMethodPositiveTest(String expectedAccountData) {
+
+        Account expectedAccount = JsonUtils.getAccountFromJson(expectedAccountData);
+        long accountId = expectedAccount.getAccountId();
+
+        Account actualResponseAccount = accountRest.setElement(expectedAccountData);
+        List<Account> actualAccountList = accountDAO.getAccountById(accountId);
+
+        assertEquals(actualResponseAccount.toString(), actualAccountList.get(0).toString(), "Account from the response body should be equal to created account!");
+        assertEquals(actualAccountList.get(0).toString(), expectedAccount.toString());
+
+        accountDAO.deleteAccountById(accountId);
     }
 
 

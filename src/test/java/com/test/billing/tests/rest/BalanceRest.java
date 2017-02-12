@@ -1,12 +1,7 @@
 package com.test.billing.tests.rest;
 
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.test.billing.dao.model.Balance;
-
-import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import com.test.billing.tests.utils.JsonUtils;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
@@ -35,18 +30,7 @@ public class BalanceRest {
                 .response()
                 .body().asString();
 
-        JsonFactory factory = new JsonFactory();
-        ObjectMapper mapper = new ObjectMapper(factory);
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-        mapper.setDateFormat(df);
-
-        Balance balance = null;
-        try {
-            balance = mapper.readValue(json, Balance.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return balance;
+        return JsonUtils.getBalanceFromJson(json);
     }
 
     public void getElementByIdNegative(String id) {
@@ -58,6 +42,25 @@ public class BalanceRest {
                 .log()
                 .ifValidationFails()
                 .statusCode(404);
+    }
+
+    public Balance setElement(String body) {
+        String json = given()
+                .body(body)
+                .header("Content-Type", "application/json")
+                .when()
+                .post(rootPath + "balance")
+                .then()
+                .log()
+                .ifValidationFails()
+                .statusCode(200)
+                .assertThat()
+                .body(matchesJsonSchemaInClasspath("balance-schema.json"))
+                .extract()
+                .response()
+                .body().asString();
+
+        return JsonUtils.getBalanceFromJson(json);
     }
 
     public BalanceRest() {

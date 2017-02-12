@@ -1,12 +1,7 @@
 package com.test.billing.tests.rest;
 
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.test.billing.dao.model.Account;
-
-import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import com.test.billing.tests.utils.JsonUtils;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
@@ -35,18 +30,7 @@ public class AccountRest {
                 .response()
                 .body().asString();
 
-        JsonFactory factory = new JsonFactory();
-        ObjectMapper mapper = new ObjectMapper(factory);
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-        mapper.setDateFormat(df);
-
-        Account account = null;
-        try {
-            account = mapper.readValue(json, Account.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return account;
+        return JsonUtils.getAccountFromJson(json);
     }
 
     public void getElementByIdNegative(String id) {
@@ -58,6 +42,25 @@ public class AccountRest {
                 .log()
                 .ifValidationFails()
                 .statusCode(404);
+    }
+
+    public Account setElement(String body) {
+        String json = given()
+                .body(body)
+                .header("Content-Type", "application/json")
+                .when()
+                .post(rootPath + "account")
+                .then()
+                .log()
+                .ifValidationFails()
+                .statusCode(200)
+                .assertThat()
+                .body(matchesJsonSchemaInClasspath("account-schema.json"))
+                .extract()
+                .response()
+                .body().asString();
+
+        return JsonUtils.getAccountFromJson(json);
     }
 
     public AccountRest() {
