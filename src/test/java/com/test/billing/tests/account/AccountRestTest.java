@@ -67,6 +67,7 @@ public class AccountRestTest extends AbstractTestNGSpringContextTests {
 
         Account expectedAccount = JsonUtils.getAccountFromJson(expectedAccountData);
         long accountId = expectedAccount.getAccountId();
+        accountDAO.deleteAccountById(accountId);
 
         Account actualResponseAccount = accountRest.setElement(expectedAccountData);
         List<Account> actualAccountList = accountDAO.getAccountById(accountId);

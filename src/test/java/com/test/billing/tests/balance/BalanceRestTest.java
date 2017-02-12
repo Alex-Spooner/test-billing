@@ -66,6 +66,7 @@ public class BalanceRestTest extends AbstractTestNGSpringContextTests {
 
         Balance expectedBalance = JsonUtils.getBalanceFromJson(expectedBalanceData);
         long balanceId = expectedBalance.getBalanceId();
+        balanceDAO.deleteBalanceById(balanceId);
 
         Balance actualResponseBalance = balanceRest.setElement(expectedBalanceData);
         List<Balance> actualBalanceList = balanceDAO.getBalanceById(balanceId);
@@ -74,6 +75,5 @@ public class BalanceRestTest extends AbstractTestNGSpringContextTests {
         assertEquals(actualBalanceList.get(0).toString(), expectedBalance.toString());
 
         balanceDAO.deleteBalanceById(balanceId);
-        ;
     }
 }
